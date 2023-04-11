@@ -1,0 +1,226 @@
+..+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....+....9....+....0....+....
+5769PW1 V4R4M0  990521                  LISTE SOURCE SEU                              11/04/23 22:10:24    
+FICHIER SOURCE  . . . . .  SIDACH/QRPGSRC                                                                  
+MEMBRE  . . . . . . . . .  ACH178A                                                                         
+SEQNBR*...+... 1 ...+... 2 ...+... 3 ...+... 4 ...+... 5 ...+... 6 ...+... 7 ...+... 8 ...+... 9 ...+... 0 
+  100      H              J                                                                                
+  200       **********************************                                                             
+  300       *  GENERATION COMMANDES          *                                                             
+  400       *  POUR EMANDES D'ACHATS P.RECH. *                                                             
+  500       *                                *                                                             
+  600       *   M. LE GOUARD   LE 14/10/03   *                                                             
+  700       **********************************                                                             
+  800      FACH178AMCF  E                    WORKSTN                                                       
+  900      F                                        LIGNE2KSFILE ECRAN2                                    
+ 1000      F                                        LIGNE3KSFILE ECRAN3                                    
+ 1100      FDEMACHL5IF  E           K        DISK                                                          
+ 1200      FOFFCDPREIF  E           K        DISK                                                          
+ 1300      FOFFCDPRLIF  E           K        DISK                                                          
+ 1400      FDEMACHATUF  E           K        DISK                                                          
+ 1500      FGENERAL IF  E           K        DISK                                                          
+1600      FCOCLIENTIF  E           K        DISK                        
+1700      IRDEML5                                                       
+1800      I              NUMCDE                          NUCDL5         
+1900      I              NUMLIG                          NULIL5         
+2000      I              DESTIN                          DESDDD         
+2100      I              NUMDEM                          NUMDDD         
+2200      I            DS                                               
+2300      I                                        1  10 ZPLL10         
+2400      I                                        1   6 Z1             
+2500      I                                        7   8 Z2             
+2600      I            DS                                               
+2700      I                                        1  10 ENCBON         
+2800      I                                        1   6 ENC1           
+2900      I                                        7   8 ENC2           
+3000      I            DS                                               
+3100      I                                        1  30 ZPOD30         
+3200      I                                        3  12 ZLOD1N         
+3300      I                                        3   3 PM             
+3400      I                                        4   9 NUMPM          
+3500      I                                        4   90NUMPM1     
+3600      I                                       10  110NUMPML     
+3700      I            DS                                           
+3800      I                                        1   51NBRMUL     
+3900      I                                        1   40NBRMUA     
+4000      I                                        5   50NBRMUD     
+4100      I            DS                                           
+4200      I                                        1  50 LIBELL     
+4300      I                                        1  15 LGEN1      
+4400      I                                       16  30 LGEN2      
+4500      I                                       31  50 LGEN3      
+4600       *******                                                  
+4700       *   Index des fichiers                                   
+4800       *******                                                  
+4900      C           INDLOT    KLIST                               
+5000      C                     KFLD           NUMECD               
+5100      C                     KFLD           LOT                  
+5200      C           INDGEN    KLIST                               
+5300      C                     KFLD           TYPGEN               
+                                                                    5400      C                     KFLD           CODGEN            
+5500      C           INDL5     KLIST                            
+5600      C                     KFLD           ENCBON            
+5700      C                     KFLD           FUTMAP            
+5800      C                     KFLD           NUMDDD            
+5900       *******                                               
+6000       *   Début traitement                                  
+6100       *******                                               
+6200      C           DEBUT0    TAG                              
+6300      C                     MOVE 'ACHET'   TYPGEN            
+6400      C                     MOVE '5'       CODGEN            
+6500      C*                    MOVE 'P'       CODGEN            
+6600      C*                    MOVE 'P'       ACHET             
+6700      C                     MOVE '5'       ACHET             
+6800      C           INDGEN    CHAINGENERAL              11     
+6900      C           *IN11     CABEQ'1'       FIN                          
+7000      C                     MOVELLGEN1     NOMACH                       
+7100       *                                                                
+7200       * Recherche si demandes achats passées sur BTC                   
+7300       *                                                                
+7400      C           DEBYYY    TAG                                         
+7500      C                     MOVE *BLANKS   ENCBON                       
+7600      C                     MOVE *BLANKS   FUTMAP                       
+7700      C                     Z-ADD0         NUMDDD                       
+7800      C                     MOVE ' '       AUCUN   1                    
+7900      C           INDL5     SETLLDEMACHL5                               
+8000      C           DEBUTY    TAG                                         
+8100      C                     READ DEMACHL5                 90            
+8200      C           *IN90     IFEQ '0'                                    
+8300      C           ACHET     CABNEACHPR     DEBUTY                       
+8400      C                     MOVELENCBON    ENCDEB  1                    
+8500      C           ENCDEB    CABNE'B'       DEBUTY                       
+8600      C                     GOTO DEBUZY                                 
+8700      C                     END                                         
+8800      C                     GOTO FIN                                        
+8900       *                                                                    
+9000       * Recherche si encours généré pour BTC                               
+9100       *                                                                    
+9200      C           DEBUZY    TAG                                             
+9300       * Remise à blanc sous fichier                                        
+9400      C                     MOVE '1'       *IN37                            
+9500      C                     WRITEECRAN3A                                    
+9600      C                     MOVE '0'       *IN37                            
+9700       *                                                                    
+9800       * Traitement encours non créés                                       
+9900       *                                                                    
+10000      C                     Z-ADD0         LIGNE3                           
+10100      C                     MOVE *BLANKS   ENCBON                           
+10200      C                     MOVE *BLANKS   FUTMAP                           
+10300      C                     Z-ADD0         NUMDDD                           
+10400      C           INDL5     SETLLDEMACHL5                                   
+10500      C           S0AL5H    TAG                                             
+10600      C                     READ DEMACHL5                 81                
+
+10700      C           *IN81     IFEQ '1'                                     
+10800      C           LIGNE3    CABEQ0         FINA                          
+10900      C                     Z-ADD1         LIGNE3                        
+11000      C                     GOTO STL599                                  
+11100      C                     END                                          
+11200      C           ACHET     CABNEACHPR     S0AL5H                        
+11300      C                     MOVELENCBON    ENCDEB  1                     
+11400      C           ENCDEB    CABNE'B'       S0AL5H                        
+11500      C                     MOVELENCBON    NUMECD                        
+11600      C           NUMECD    CHAINOFFCDPRE             73                 
+11700      C           *IN73     CABEQ'1'       S0AL5H                        
+11800      C           NUSADV    CABNE*BLANKS   S0AL5H                        
+11900      C                     MOVE *BLANKS   NOMCLI                        
+12000      C           CLIORD    CHAINCOCLIENT             74                 
+12100      C           *IN74     IFEQ '0'                                     
+12200      C                     MOVELNOM       NOMCLI                        
+12300      C                     END                                          
+12400      C                     MOVELTEXDE1    DES                           
+12500      C                     ADD  1         LIGNE3     83                 
+12600      C                     WRITEECRAN3                                  
+12700      C                     GOTO S0AL5H                                  
+12800      C           STL599    TAG                                          
+12900      C                     EXFMTECRAN3A                                 
+13000      C           *INKL     CABEQ'1'       FIN                           
+13100      C           FINA      TAG                                          
+13200       *                                                                 
+13300       * Recherche si encours généré pour BTC                            
+13400       *                                                                 
+13500       * Remise à blanc sous fichier                                     
+13600      C                     MOVE '1'       *IN37                         
+13700      C                     WRITEECRAN2A                                 
+13800      C                     MOVE '0'       *IN37                         
+13900       *                                                                 
+14000       * Traitement encours créés                                        
+14100       *                                                                         
+14200      C                     Z-ADD0         LIGNE2                                
+14300      C                     Z-ADD0         LIG1    40                            
+14400      C                     MOVE *BLANKS   ENCBON                                
+14500      C                     MOVE *BLANKS   FUTMAP                                
+14600      C                     Z-ADD0         NUMDDD                                
+14700      C           INDL5     SETLLDEMACHL5                                        
+14800      C           X0AL5H    TAG                                                  
+14900      C                     READ DEMACHL5                 81                     
+15000      C           *IN81     IFEQ '1'                                             
+15100      C           LIGNE2    CABEQ0         FIN                                   
+15200      C                     Z-ADD1         LIGNE2                                
+15300      C                     GOTO XTL599                                          
+15400      C                     END                                                  
+15500      C           ACHET     CABNEACHPR     X0AL5H                                
+15600      C                     MOVELENCBON    ENCDEB  1                             
+15700      C           ENCDEB    CABNE'B'       X0AL5H                                
+15800      C                     MOVELENCBON    NUMECD                                
+15900      C           NUMECD    CHAINOFFCDPRE             73                         
+                                                                                      
+16000      C           *IN73     CABEQ'1'       X0AL5H                        
+16100      C           NUSADV    CABEQ*BLANKS   X0AL5H                        
+16200      C                     MOVELENC2      LOT                           
+16300      C           INDLOT    CHAINOFFCDPRL             73                 
+16400      C           *IN73     CABEQ'1'       X0AL5H                        
+16500      C           Z1        CABEQ*BLANKS   X0AL5H                        
+16600      C                     MOVE *BLANKS   NOMCLI                        
+16700      C           CLIORD    CHAINCOCLIENT             74                 
+16800      C           *IN74     IFEQ '0'                                     
+16900      C                     MOVELNOM       NOMCLI                        
+17000      C                     END                                          
+17100      C                     MOVELTEXDE1    DES                           
+17200      C                     MOVELENC1      BTC                           
+17300      C                     MOVELENC2      LOTBTC                        
+17400      C                     MOVELZ1        ENCOUR                        
+                                                                              
+17500      C                     MOVELZ2        LOTENC                           
+17600      C                     ADD  1         LIGNE2     83                    
+17700      C                     ADD  1         LIG1                             
+17800      C                     WRITEECRAN2                                     
+17900      C                     GOTO X0AL5H                                     
+18000      C           XTL599    TAG                                             
+18100      C                     EXFMTECRAN2A                                    
+18200      C           *INKL     CABEQ'1'       FIN                              
+18300       *                                                                    
+18400       * Changement N°encours dans DA                                       
+18500       *                                                                    
+18600      C                     Z-ADD1         LIG     40                       
+18700      C                     MOVE ' '       OUITRA  1                        
+18800      C                     MOVE '0'       *IN82                            
+18900      C           YL5       TAG                                             
+19000      C           LIG       CHAINECRAN2               05                    
+19100      C           *IN05     CABEQ'1'       SXXXL5                           
+19200       ***                                                                  
+19300       * Recherche DA                                                       
+19400       ***                                                              
+19500      C           NUMDDD    CHAINDEMACHAT             45                
+19600      C           *IN45     IFEQ '0'                                    
+19700      C                     MOVELENCOUR    ENC1                         
+19800      C                     MOVELLOTENC    ENC2                         
+19900      C                     UPDATRDEMACH                                
+20000       ***                                                              
+20100       * Appel ADV137C1 pour maj N°demande dans OFFCDPRD                
+20200       ***                                                              
+20300      C                     MOVEL'D'       NUMCCC  7                    
+20400      C                     MOVE NUMDDD    NUMCCC                       
+20500      C                     CALL 'ADV137C1'                             
+20600      C                     PARM           BTC                          
+20700      C                     PARM           LOTBTC                       
+20800      C                     PARM           NUMCCC                       
+20900      C                     END                                         
+21000      C                     ADD  1         LIG                          
+21100      C           LIG       CABLELIG1      YL5                          
+21200      C           SXXXL5    TAG                                         
+21300      C                     READCECRAN2                   80             
+21400      C                     GOTO FINA                                    
+21500      C           FIN       TAG                                          
+21600      C                     MOVE '1'       *INLR                         
+                                * * * *  F I N  D U  S O U R C E  * * * *     
+                                                                              
