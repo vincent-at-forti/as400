@@ -1,0 +1,95 @@
+0001.00      H              J                                                                990111       
+0002.00       *******************************************************************            990111       
+0003.00       *      CREATION DETECROD AVEC ARTICLES DE STOCK                   *            131114       
+0004.00       *                                                                 *            131114       
+0005.00       *       M.LE GOUARD  LE 14/11/13                                  *            131114       
+0006.00       *******************************************************************            990111       
+0007.00      FFENC025 IPE E           K        DISK                                          131114       
+0008.00      FDETECRODO   E           K        DISK                                          131114       
+0009.00      E                    ENT     1   1 19                                           131114       
+0010.00      E                    XPE    12  12  2 0                                         181113       
+0011.00      I            DS                                                                 131114       
+0012.00      I                                        1   9 PIECE                            131114       
+0013.00      I                                        1   2 Z1                               131114       
+0014.00      I                                        3   4 Z2                               131114       
+0015.00      I                                        5   6 Z3                               131114       
+0016.00      I                                        7   7 Z4                               131114       
+0017.00      I            DS                                                                 131114       
+0018.00      I                                        1  35 LIB                              131114       
+0019.00      I                                        1  20 Z10                              131114       
+0020.00      I                                       21  35 Z11                              131114               
+0021.00      I           UDS                                                                 990111               
+0022.00      I                                        1   20ANP                              181113               
+0023.00      I                                        3   40MMP                              181113               
+0024.00       *                                                                              131113               
+0025.00       * Début traitement                                                             131113               
+0026.00       *                                                                              131113               
+0027.00      C           PREM      IFEQ ' '                                                  131113               
+0028.00      C*_______________________________                                               181113               
+0029.00      C*AJOUT ASTUCE MOIS GLISSANT                                                    181113               
+0030.00      C* PERIODE ANP ANNEE                                                            181114               
+0031.00      C                     Z-ADDANP       AN      20                                 181113               
+0032.00      C           AN        ADD  100       ANNEE   30                                 181114               
+0033.00      C                     Z-ADDMMP       I       20                                 181113               
+0034.00      C                     Z-ADDXPE,I     MM      20                                 181113               
+0035.00      C           MMP       IFGE 10                                                   181114               
+0036.00      C                     ADD  1         AN                                         181113               
+0037.00      C                     END                                                       181113               
+0038.00      C*_______________________________                                               181113               
+0039.00      C           MMP       ADD  1         MOIS1   20                                 181114               
+0040.00      C                     Z-ADDANNEE     ANNEE1  30                                 131114            
+0041.00      C           MOIS1     IFEQ 13                                                   181114            
+0042.00      C                     ADD  1         ANNEE1                                     181114            
+0043.00      C                     Z-ADD01        MOIS1                                      181114            
+0044.00      C                     END                                                       181114            
+0045.00      C                     MOVE '1'       PREM    1                                  131113            
+0046.00      C                     END                                                       131113            
+0047.00       *  ECRITURE DU MOIS                                                            131114            
+0048.00      C                     Z-ADDANNEE     PERAN                                      131114            
+0049.00      C                     Z-ADDMMP       PERMM                                      181113            
+0050.00      C                     MOVE 'STK'     TYPMVT                                     131114            
+0051.00      C                     MOVE *BLANKS   PIECE                                      131114            
+0052.00      C                     MOVE 'OD'      Z1                                         131114            
+0053.00      C                     MOVE AN        Z2                                         131114            
+0054.00      C                     MOVE MM        Z3                                         131114            
+0055.00      C                     MOVE *BLANKS   LIB                                        131114            
+0056.00      C                     MOVELENT,1     Z10                                        131114            
+0057.00      C                     MOVELITNBR     Z11                                        131114            
+0058.00      C                     MOVELLIB       LIBECR                                     131114            
+0059.00      C                     MOVELPIECE     PIECPT                                     131114            
+0060.00      C                     MOVE ' '       TYPECR                                     131114             
+0061.00       * DEBIT                                                                        131114             
+0062.00      C                     MOVELCPTBIL    CPT                                        131114             
+0063.00      C                     MOVE 'D'       SENS                                       131114             
+0064.00      C                     WRITERDETECR                                              131114             
+0065.00       * CREDIT                                                                       131114             
+0066.00      C                     MOVELCPTCR     CPT                                        131114             
+0067.00      C                     MOVE 'C'       SENS                                       131114             
+0068.00      C                     WRITERDETECR                                              131114             
+0069.00       *  ECRITURE CONTREPASSATION                                                    131114             
+0070.00      C                     Z-ADDANNEE1    PERAN                                      131114             
+0071.00      C                     Z-ADDMOIS1     PERMM                                      131114             
+0072.00      C                     MOVE *BLANKS   PIECE                                      131114             
+0073.00      C                     MOVE 'OD'      Z1                                         131114             
+0074.00      C                     MOVE AN        Z2                                         131114             
+0075.00      C                     MOVE MM        Z3                                         131114             
+0076.00      C                     MOVE 'C'       Z4                                         131114             
+0077.00      C                     MOVE *BLANKS   LIB                                        131114             
+0078.00      C                     MOVELENT,1     Z10                                        131114             
+0079.00      C                     MOVELITNBR     Z11                                        131114             
+0080.00      C                     MOVELLIB       LIBECR                                     131114                          
+0081.00      C                     MOVELPIECE     PIECPT                                     131114                          
+0082.00      C                     MOVE 'C'       TYPECR                                     131114                          
+0083.00       * CREDIT                                                                       131114                          
+0084.00      C                     MOVELCPTBIL    CPT                                        131114                          
+0085.00      C                     MOVE 'C'       SENS                                       131114                          
+0086.00      C                     WRITERDETECR                                              131114                          
+0087.00       * DEBIT                                                                        131114                          
+0088.00      C                     MOVELCPTCR     CPT                                        131114                          
+0089.00      C                     MOVE 'D'       SENS                                       131114                          
+0090.00      C                     WRITERDETECR                                              131114                          
+0091.00 **                                                                                   131114                          
+0092.00 STK/ENCOURS                                                                          131114                          
+0093.00 ** XPE                                                                               181113                          
+0094.00 040506070809101112010203                                                             181113                          
+        ***************  Fin des données  ***********************************************************************************                                                                                                                
